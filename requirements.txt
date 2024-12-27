@@ -1,0 +1,5 @@
+mysql-connector-python
+slack-sdk
+cloud-sql-python-connector[pg8000]
+pandas
+sqlalchemy
