@@ -43,11 +43,17 @@ class ReminderBackblastsHandler:
 				bot_token,
 				settings ->> 'paxminer_database_name' as paxminer_database_name,
 				settings ->> 'log_channel_id' as log_channel_id,
-				coalesce(settings ->> 'reminder_backblast_grace_period_days', '2')::int as grace_period_days,
-				coalesce(settings ->> 'reminder_backblast_max_notification_days', '75')::int as max_notification_days,
-				coalesce(settings ->> 'reminder_backblast_notification_day_of_week', '0')::int as notification_day_of_week
+				(settings ->> 'reminder_backblast_grace_period_days')::numeric::int as grace_period_days,
+				(settings ->> 'reminder_backblast_max_notification_days')::numeric::int as max_notification_days,
+				(settings ->> 'reminder_backblast_notification_day_of_week')::numeric::int as notification_day_of_week
 			from
-				slack_spaces"""
+				slack_spaces
+			where 
+				(settings ->> 'reminder_backblast_is_active')::bool AND
+				jsonb_typeof(settings -> 'reminder_backblast_grace_period_days') = 'number' AND
+				jsonb_typeof(settings -> 'reminder_backblast_max_notification_days') = 'number' AND
+				jsonb_typeof(settings -> 'reminder_backblast_notification_day_of_week') = 'number'
+			"""
 
 		with pool.connect() as db_conn:
 			settings = pd.read_sql_query(query, db_conn, None)

@@ -3,7 +3,6 @@ slack-sdk
 cloud-sql-python-connector[pg8000]
 pandas
 sqlalchemy
-logging
 google-cloud-logging
 flask
 python-dotenv
