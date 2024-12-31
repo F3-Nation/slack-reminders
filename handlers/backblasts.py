@@ -253,4 +253,4 @@ class ReminderBackblastsHandler:
 			except Exception as err:
 				logging.info("Failed to process region with inputs '" + str(slackWorkspaceInputs) + "'. Will move to next region. Error:\n\n" + str(err))
 				
-		return 'OK'
+		logging.info("Finished")
