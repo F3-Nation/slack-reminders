@@ -5,13 +5,15 @@ from threading import Thread
 import logging
 import json
 import google.cloud.logging
-from handlers.backblasts import ReminderBackblastsHandler
+from handlers.backblasts import BackblastHandler
+from handlers.emergency_contact import EmergencyContactHandler
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(message)s')
 googleLoggingClient = google.cloud.logging.Client()
 googleLoggingClient.setup_logging()
 
-backblasts = ReminderBackblastsHandler()
+backblasts = BackblastHandler()
+emergencycontacts = EmergencyContactHandler()
 
 app = Flask(__name__)
 
@@ -30,6 +32,12 @@ def favicon():
 @app.route('/backblasts', methods=['POST'])
 def process_all_backblast_reminders():
     thread = Thread(target=backblasts.check_for_missing_backblasts)
+    thread.start()
+    return Response(status=200)
+
+@app.route('/emergencycontacts', methods=['POST'])
+def process_all_emergencycontact_reminders():
+    thread = Thread(target=EmergencyContactHandler.check_for_missing_emergency_contacts)
     thread.start()
     return Response(status=200)
 

@@ -13,7 +13,7 @@ import pg8000
 from sqlalchemy import create_engine
 import pandas as pd
 
-class ReminderBackblastsHandler:
+class BackblastHandler:
 	def __init__(self):
 		pass
 
@@ -41,7 +41,7 @@ class ReminderBackblastsHandler:
 
 		pool = create_engine(
 			"postgresql+pg8000://", 
-			creator=ReminderBackblastsHandler._get_conn
+			creator=BackblastHandler._get_conn
 		)
 
 		query = """
@@ -100,7 +100,7 @@ class ReminderBackblastsHandler:
 	def check_for_missing_backblasts(self):
 		logging.info("Starting")
 
-		settings = ReminderBackblastsHandler._get_settings()
+		settings = BackblastHandler._get_settings()
 
 		# SQL Query Columns
 		indexQ = 4
@@ -192,12 +192,12 @@ class ReminderBackblastsHandler:
 
 				for q in qs:
 					message = []
-					message.append(ReminderBackblastsHandler._get_block_header("Missing Backblasts!"))
-					message.append(ReminderBackblastsHandler._get_block_context("It looks like you forgot to post the following backblast(s). :grimacing:"))
+					message.append(BackblastHandler._get_block_header("Missing Backblasts!"))
+					message.append(BackblastHandler._get_block_context("It looks like you forgot to post the following backblast(s). :grimacing:"))
 					qId = q[0][indexQ]
 					
 					for missingBB in q:
-						message.append(ReminderBackblastsHandler._get_block_section("A " + missingBB[3] + " at <#" + missingBB[indexAO] + "> on " + missingBB[0].strftime("%A") + " " + missingBB[0].strftime("%m/%d/%y") + " at " + missingBB[1]))
+						message.append(BackblastHandler._get_block_section("A " + missingBB[3] + " at <#" + missingBB[indexAO] + "> on " + missingBB[0].strftime("%A") + " " + missingBB[0].strftime("%m/%d/%y") + " at " + missingBB[1]))
 
 					slack_client.chat_postMessage(channel=qId, text="Missing Backblast!!! :grimacing:", blocks=message)
 					logging.info("Messaged Q "+ qId)
@@ -216,15 +216,15 @@ class ReminderBackblastsHandler:
 
 				for siteQ in siteQs:
 					message = []
-					message.append(ReminderBackblastsHandler._get_block_header("Missing Backblasts!"))
-					message.append(ReminderBackblastsHandler._get_block_context("It looks like there are backblasts missing at the site(s) you lead. :warning:"))
+					message.append(BackblastHandler._get_block_header("Missing Backblasts!"))
+					message.append(BackblastHandler._get_block_context("It looks like there are backblasts missing at the site(s) you lead. :warning:"))
 					siteQId = siteQ[0][indexSiteQ]
 					
 					for missingBB in siteQ:
 						messagePart = "A " + missingBB[3] + " at <#" + missingBB[indexAO] + "> on " + missingBB[0].strftime("%A") + " " + missingBB[0].strftime("%m/%d/%y") + " at " + missingBB[1]
 						if (missingBB[indexQ] != ''):
 							messagePart = messagePart + (" (<@" + missingBB[indexQ] + "> was Q)")
-						message.append(ReminderBackblastsHandler._get_block_section(messagePart))
+						message.append(BackblastHandler._get_block_section(messagePart))
 
 					slack_client.chat_postMessage(channel=siteQId, text="Missing Backblasts at your AO! :warning:", blocks=message)
 					logging.info("Messaged Site Q " + siteQId)
@@ -237,15 +237,15 @@ class ReminderBackblastsHandler:
 
 				for ao in aos:
 					message = []
-					message.append(ReminderBackblastsHandler._get_block_header("Missing Backblasts!"))
-					message.append(ReminderBackblastsHandler._get_block_context("It looks like there are backblasts missing at this AO. :exploding_head:"))
+					message.append(BackblastHandler._get_block_header("Missing Backblasts!"))
+					message.append(BackblastHandler._get_block_context("It looks like there are backblasts missing at this AO. :exploding_head:"))
 					aoId = ao[0][indexAO]
 					
 					for missingBB in ao:
 						messagePart = "A " + missingBB[3] + " on " + missingBB[0].strftime("%A") + " " + missingBB[0].strftime("%m/%d/%y") + " at " + missingBB[1]
 						if (missingBB[indexQ] != ''):
 							messagePart = messagePart + (" (<@" + missingBB[indexQ] + "> was Q)")
-						message.append(ReminderBackblastsHandler._get_block_section(messagePart))
+						message.append(BackblastHandler._get_block_section(messagePart))
 
 					slack_client.chat_postMessage(channel=aoId, text="Missing Backblasts at this AO! :exploding_head:", blocks=message)
 					logging.info("Messaged AO " + aoId)
