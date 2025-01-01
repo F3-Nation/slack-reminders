@@ -98,7 +98,7 @@ class BackblastHandler:
 		}
 
 	def check_for_missing_backblasts(self):
-		logging.info("Starting")
+		logging.info("Starting Backblasts")
 
 		settings = BackblastHandler._get_settings()
 

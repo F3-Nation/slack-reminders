@@ -107,7 +107,7 @@ class EmergencyContactHandler:
 		}
 
 	def check_for_missing_emergency_contacts():
-		logging.info("Starting")
+		logging.info("Starting Emergency Contacts")
 
 		settings = EmergencyContactHandler._get_settings()
 
